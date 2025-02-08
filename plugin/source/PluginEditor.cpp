@@ -1,11 +1,31 @@
-#include "YourPluginName/PluginEditor.h"
-#include "YourPluginName/PluginProcessor.h"
+#include <memory>
+
+#include "ParameterLinks/PluginEditor.h"
+#include "ParameterLinks/PluginProcessor.h"
 
 namespace audio_plugin {
 AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
     AudioPluginAudioProcessor& p)
-    : AudioProcessorEditor(&p), processorRef(p) {
-  juce::ignoreUnused(processorRef);
+    : AudioProcessorEditor(&p),
+      processorRef(p),
+      valueTreeState(processorRef.apvts) {
+  gainSliderL.setSliderStyle(
+      juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+  gainSliderL.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+  gainSliderR.setSliderStyle(
+      juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+  gainSliderR.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 20);
+  addAndMakeVisible(gainSliderL);
+  gainSliderAttachmentL =
+      std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+          processorRef.apvts, "gainL", gainSliderL);
+  addAndMakeVisible(gainSliderR);
+  gainSliderAttachmentR =
+      std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+          processorRef.apvts, "gainR", gainSliderR);
+
+  addAndMakeVisible(toggleButton);
+
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
   setSize(400, 300);
@@ -18,15 +38,17 @@ void AudioPluginAudioProcessorEditor::paint(juce::Graphics& g) {
   // solid colour)
   g.fillAll(
       getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
-
-  g.setColour(juce::Colours::white);
-  g.setFont(15.0f);
-  g.drawFittedText("Hello World!", getLocalBounds(),
-                   juce::Justification::centred, 1);
 }
 
 void AudioPluginAudioProcessorEditor::resized() {
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
+  auto bounds = getLocalBounds();
+  auto width = getWidth();
+  auto height = getHeight();
+  toggleButton.setBounds(bounds.removeFromBottom(height / 5));
+  gainSliderL.setBounds(bounds.removeFromLeft(width / 2));
+  gainSliderR.setBounds(bounds);
 }
+
 }  // namespace audio_plugin
