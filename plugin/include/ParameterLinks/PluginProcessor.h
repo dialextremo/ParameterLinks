@@ -40,12 +40,12 @@ public:
 //    void parameterChanged(const juce::String& parameterID, float newValue) override;
 
     juce::AudioProcessorValueTreeState apvts;
+    ParameterLink link;
 
 private:
     juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
     std::atomic<float>* gainL = nullptr;
     std::atomic<float>* gainR = nullptr;
-    ParameterLink link;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessor)
 };
 } // namespace audio_plugin
