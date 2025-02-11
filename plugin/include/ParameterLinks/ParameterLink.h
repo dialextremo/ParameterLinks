@@ -30,10 +30,10 @@ public:
         }
 
         juce::ScopedValueSetter<bool> setter(isBusy, true);
-        juce::String& targetParameter =
-            parameterID == parameters.first ? parameters.second : parameters.first;
+        juce::String& targetName = parameterID == parameters.first ? parameters.second : parameters.first;
         float oldValue = lastValue[parameterID == parameters.first ? 0 : 1];
-        float currentTargetValue = apvts->getParameter(targetParameter)->getValue();
+        auto targetParameter = apvts->getParameter(targetName);
+        float currentTargetValue = targetParameter->getValue();
 
         float newTargetValue;
         if(type == Type::Delta) {
@@ -48,7 +48,9 @@ public:
 
         lastValue[parameterID == parameters.first ? 0 : 1] = newValue;
 
-        apvts->getParameter(targetParameter)->setValueNotifyingHost(newTargetValue);
+        targetParameter->beginChangeGesture();
+        targetParameter->setValueNotifyingHost(newTargetValue);
+        targetParameter->endChangeGesture();
     }
 
     void setMode(Type type_)
