@@ -15,7 +15,7 @@ juce_add_plugin(${PROJECT_NAME}
     NEEDS_MIDI_OUTPUT FALSE # may change this
     PLUGIN_MANUFACTURER_CODE MCMP # change this
     PLUGIN_CODE EXPL # change this
-    FORMATS Standalone VST3 # may change this
+    FORMATS Standalone VST3 AU # may change this
     COPY_PLUGIN_AFTER_BUILD TRUE
     PRODUCT_NAME "ParameterLinks" # change this
 )
